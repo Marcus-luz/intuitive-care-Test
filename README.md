@@ -1,69 +1,98 @@
-Teste de Entrada - Intuitive Care (v2.0)
-Candidato: Vinicios Stack: Python, Pandas, BeautifulSoup, Requests.
+🚀 Teste de Entrada - Intuitive Care (v2.0)
+Candidato: Vinicios
+
+Stack Técnica: Python, Pandas, BeautifulSoup, Requests.
 
 1. Visão Geral
-Este projeto automatiza a extração, transformação e análise de dados de demonstrações contábeis e cadastrais da ANS (Agência Nacional de Saúde Suplementar). O sistema foi projetado seguindo princípios de Clean Architecture e KISS, garantindo modularidade e resiliência no processamento de grandes volumes de dados.
+Este projeto automatiza a extração, transformação e análise de dados de demonstrações contábeis e cadastrais da ANS (Agência Nacional de Saúde Suplementar). O sistema foi projetado seguindo princípios de Clean Architecture e KISS (Keep It Simple, Stupid), garantindo modularidade e resiliência no processamento de grandes volumes de dados.
 
 2. Estrutura do Projeto
-O projeto está organizado de forma a separar as responsabilidades de infraestrutura (Extração) das regras de negócio (Transformação):
+A arquitetura separa rigorosamente as responsabilidades de infraestrutura (Extração) das regras de negócio (Transformação e Validação):
 
-main.py: Ponto de entrada (Entry Point) que orquestra todo o pipeline.
+main.py: Ponto de entrada (Entry Point) que orquestra todo o pipeline de dados.
 
-backend/core/crawler.py: Responsável pela navegação e download automatizado dos dados.
+backend/core/crawler.py: Responsável pela navegação programática e download automatizado.
 
-backend/core/processor.py: Realiza a extração de ZIPs, normalização de colunas e limpeza financeira inicial.
+backend/core/processor.py: Executa a extração de ZIPs, normalização de colunas e limpeza financeira.
 
-backend/core/enricher.py: Executa o join entre dados contábeis e cadastrais (Enriquecimento).
+backend/core/enricher.py: Realiza o join entre dados contábeis e cadastrais (Enriquecimento).
 
 backend/core/validators.py: Centraliza a lógica de validação de CNPJ e regras de negócio.
 
-backend/core/aggregator.py: Gera relatórios estatísticos (Média e Desvio Padrão).
+backend/core/aggregator.py: Motor de cálculo para relatórios estatísticos (Média e Desvio Padrão).
 
 3. Como Executar
-Certifique-se de ter o Python 3.10+ instalado.
+Ambiente: Certifique-se de ter o Python 3.10+ instalado em sua máquina.
 
-Instale as dependências: pip install pandas requests beautifulsoup4.
+Dependências: É necessário que as bibliotecas pandas, requests e beautifulsoup4 estejam disponíveis no ambiente.
 
-Na raiz do projeto, execute:
+Execução: Na raiz do projeto, execute o comando: python main.py
 
-Bash
-python main.py
-Os resultados serão gerados na pasta /data.
+Saída: Os resultados finais serão gerados automaticamente na pasta /data.
 
 4. Trade-offs Técnicos e Justificativas (Análise Crítica)
-Teste 1: Integração e Saneamento
+O desenvolvimento foi pautado pela tomada de decisões técnicas fundamentadas em cada etapa do desafio:
+
+📁 Teste 1: Integração e Saneamento
 Navegação Programática vs. URL Estática:
 
-Decisão: Implementado crawler que lê o HTML do portal da ANS.
+Decisão: Implementação de um crawler que lê o HTML do portal da ANS.
 
-Justificativa: Garante resiliência caso a ANS altere o nome dos arquivos ou a estrutura de pastas, atendendo ao requisito de "identificação por conteúdo".
+Justificativa: Garante resiliência total caso a ANS altere nomes de arquivos ou estruturas de pastas, cumprindo o requisito de "identificação por conteúdo".
 
 Processamento em Chunks (Memória):
 
-Decisão: Uso de chunksize=50000 no Pandas.
+Decisão: Utilização de chunksize=50000 no processamento via Pandas.
 
-Justificativa: Permite o processamento de arquivos contábeis pesados (milhões de linhas) sem estourar a memória RAM do servidor (Trade-off: Baixo consumo de RAM vs. Tempo de I/O).
+Justificativa: Permite processar arquivos contábeis extremamente pesados sem comprometer a memória RAM, otimizando o tempo de I/O em relação ao consumo de hardware.
 
-Teste 2: Transformação e Validação
+⚖️ Teste 2: Transformação e Validação
 Validação Estrita de CNPJ:
 
-Decisão: Registros com CNPJs que falham no dígito verificador são descartados.
+Decisão: Registros com CNPJs que falham no cálculo do dígito verificador são descartados.
 
-Justificativa: Prioriza a qualidade do dado para o Banco de Dados (Teste 3), evitando a poluição de registros não auditáveis.
+Justificativa: Prioriza a integridade dos dados para a etapa de Banco de Dados (Teste 3), eliminando ruídos e inconsistências na origem.
 
 Join de Enriquecimento (Inner Join):
 
-Decisão: Utilizado how='inner' no cruzamento com o cadastro de operadoras.
+Decisão: Uso do método how='inner' no cruzamento com o cadastro de operadoras.
 
-Justificativa: Dados financeiros sem correspondência no cadastro ativo não possuem UF ou Razão Social válida, sendo irrelevantes para as agregações estatísticas do item 2.3.
+Justificativa: Registros financeiros sem correspondência ativa no cadastro da ANS carecem de UF ou Razão Social válida, tornando-os irrelevantes para as agregações estatísticas finais.
 
 Cálculo de Desvio Padrão:
 
-Decisão: Substituição de valores NaN por 0 no desvio padrão.
+Decisão: Substituição técnica de valores NaN por 0 no cálculo do desvio padrão.
 
-Justificativa: Operadoras com apenas um registro trimestral não possuem variância estatística; o preenchimento com zero mantém a integridade numérica do relatório final.
+Justificativa: Operadoras com apenas um registro trimestral não possuem variância estatística; o preenchimento com zero preserva a precisão do relatório final.
 
-5. Tratamento de Erros
-Resiliência de Colunas: Implementado mapeamento por "Sinônimos" (Synonyms Mapping) para identificar colunas mesmo que o nome mude entre trimestres (ex: REG_ANS vs REGISTRO_OPERADORA).
+5. Tratamento de Erros e Resiliência
+Mapeamento de Sinônimos: Implementado sistema de Synonyms Mapping para identificar colunas de forma dinâmica (ex: REG_ANS vs REGISTRO_OPERADORA), suportando variações nos cabeçalhos entre diferentes trimestres.
 
-Integridade de Caminhos: Uso de injeção de dependência para caminhos de diretórios, resolvendo conflitos de execução em diferentes sistemas operacionais.
+Integridade de Caminhos: Utilização de injeção de dependência para caminhos de diretórios, garantindo que o software opere corretamente em diferentes sistemas operacionais e ambientes de execução.
+
+
+
+3. TESTE DE BANCO DE DADOS E ANÁLISE
+
+Nota para o Recrutador (Teste 3): Devido às restrições do MySQL com caminhos absolutos no comando LOAD DATA INFILE, é necessário abrir o arquivo db/import.sql e substituir <CAMINHO_ABSOLUTO_DO_PROJETO> pelo caminho onde o repositório foi clonado em sua máquina.
+
+Trade-off Técnico - Importação de Dados (Item 3.2):
+
+Decisão: Utilizei caminhos absolutos com marcadores no script SQL.
+
+Justificativa: O comando LOAD DATA INFILE do MySQL exige caminhos absolutos por questões de segurança do servidor. Considerei criar um script de importação em Python para automatizar o caminho, mas optei por manter a carga via SQL puro para simplificar a avaliação da estrutura do banco de dados (KISS), documentando claramente a necessidade de ajuste de path no README.
+
+📝 Atualização Final do README (Secção Banco de Dados)
+Para demonstrar o seu Pensamento Crítico nesta etapa final do Teste 3, adicione estas justificativas ao seu README.md:
+
+Consultas Analíticas (Itens 3.4 e 3.5):
+
+Decisão: Implementei subconsultas ((SELECT MAX(ano)...)) para filtrar os resultados.
+
+Justificativa: Evita o uso de valores "hardcoded" (fixos), permitindo que o sistema funcione automaticamente para dados de 2024, 2025 ou anos futuros sem necessidade de alteração no código SQL.
+
+Performance:
+
+Decisão: Utilização de agrupamento (GROUP BY) e ordenação (ORDER BY) em colunas indexadas.
+
+Justificativa: Garante que os relatórios de "Top 10" sejam gerados em milissegundos, mesmo que a tabela despesas_consolidadas contenha milhões de registros originais das operadoras da ANS.
