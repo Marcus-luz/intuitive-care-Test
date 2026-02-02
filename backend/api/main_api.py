@@ -23,7 +23,7 @@ def get_db_connection():
         collation='utf8mb4_general_ci' 
     )
 
-# 4.2. Rota: Listar Operadoras com Paginação
+# 4.2. Rota: Listar Operadoras com Paginação (Item 4.2 e 4.3 do PDF)
 @app.get("/api/operadoras")
 def list_operadoras(
     page: int = Query(1, ge=1), 
@@ -38,9 +38,9 @@ def list_operadoras(
         params = []
         
         if q:
-            # CORREÇÃO: Buscando apenas por razao_social, pois cnpj não existe na tabela
-            where_clause = "WHERE razao_social LIKE %s"
-            params = [f"%{q}%"]
+            # AJUSTE: Agora busca por Razão Social OU CNPJ conforme requisito 4.3 
+            where_clause = "WHERE razao_social LIKE %s OR cnpj LIKE %s"
+            params = [f"%{q}%", f"%{q}%"]
 
         cursor.execute(f"SELECT COUNT(*) as total FROM despesas_agregadas {where_clause}", params)
         total = cursor.fetchone()['total']
@@ -49,6 +49,7 @@ def list_operadoras(
         cursor.execute(sql, params + [limit, offset])
         data = cursor.fetchall()
         
+        # Estrutura de Metadados conforme item 4.2.4 do PDF 
         return {
             "data": data,
             "total": total,
@@ -60,47 +61,36 @@ def list_operadoras(
         cursor.close()
         conn.close()
 
-# 4.2. Rota: Detalhes por Razão Social (Usando como ID)
-@app.get("/api/operadoras/{razao_social}")
-def get_operadora(razao_social: str):
-    conn = get_db_connection()
-    cursor = conn.cursor(dictionary=True)
-    try:
-        cursor.execute("SELECT * FROM despesas_agregadas WHERE razao_social = %s", (razao_social,))
-        result = cursor.fetchone()
-        if not result:
-            raise HTTPException(status_code=404, detail="Operadora não encontrada")
-        return result
-    finally:
-        cursor.close()
-        conn.close()
-
-# 4.2. Rota: Histórico de Despesas
+# 4.2. Rota: Histórico de Despesas (Item 4.2 e 4.3.2 do PDF)
 @app.get("/api/operadoras/historico/{razao_social}")
 def get_historico(razao_social: str):
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
     try:
-        # Nota: Ajustado para buscar por Razão Social na tabela de histórico
+        # O CAST garante que o MySQL envie um número que o JSON entenda como float, eliminando o NaN
         cursor.execute("""
-            SELECT trimestre, ano, valor_despesa 
+            SELECT trimestre, ano, CAST(valor_despesa AS FLOAT) as valor_despesa 
             FROM despesas_consolidadas 
-            WHERE razao_social = %s 
-            ORDER BY ano DESC, trimestre DESC
+            WHERE TRIM(razao_social) = TRIM(%s) 
+            ORDER BY ano ASC, trimestre ASC
         """, (razao_social,))
-        return cursor.fetchall()
+        result = cursor.fetchall()
+        return result
     finally:
         cursor.close()
         conn.close()
 
+# 4.2. Rota: Estatísticas Agregadas (Item 4.2.3 do PDF)
 @app.get("/api/estatisticas")
 def get_stats():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
     try:
+        # Top 5 operadoras por gasto [cite: 145]
         cursor.execute("SELECT razao_social, total_despesas FROM despesas_agregadas ORDER BY total_despesas DESC LIMIT 5")
         top_5 = cursor.fetchall()
         
+        # Distribuição por UF conforme item 4.3 [cite: 171]
         cursor.execute("SELECT uf, SUM(total_despesas) as despesa_uf FROM despesas_agregadas GROUP BY uf")
         uf_dist = cursor.fetchall()
         

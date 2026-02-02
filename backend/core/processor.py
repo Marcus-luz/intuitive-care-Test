@@ -9,7 +9,6 @@ class DataProcessor:
         self.data_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), data_dir))
         
         # Mapeamento atualizado baseado na estrutura real vista nos arquivos da ANS
-        # REG_ANS e DESCRICAO são as âncoras para identificação resiliente
         self.column_map = {
             'RegistroANS': ['REG_ANS', 'Registro ANS', 'NR_REG_ANS'],
             'Descricao': ['DESCRICAO', 'DS_CONTA', 'Descricao'],
@@ -26,8 +25,7 @@ class DataProcessor:
                     zip_ref.extractall(self.data_dir)
 
     def is_target_file(self, filename):
-        """1.2: Identifica arquivos CSV de dados (ex: 1T2025.csv) de forma resiliente."""
-        # Aceitamos CSVs que não sejam arquivos já processados ou cadastros
+        """1.2: Identifica arquivos CSV de dados de forma resiliente."""
         return filename.lower().endswith('.csv') and 'consolidado' not in filename.lower() and 'operadoras' not in filename.lower()
 
     def normalize_columns(self, df):
@@ -47,32 +45,28 @@ class DataProcessor:
 
         try:
             if ext in ['.csv', '.txt']:
-                # ATUALIZAÇÃO: Adicionado 'iso-8859-1' para leitura correta de acentos nos arquivos da ANS
-                for encoding in ['iso-8859-1', 'utf-8', 'latin1']:
+                # CORREÇÃO DE LEITURA: Prioriza 'iso-8859-1' para ler corretamente os acentos da ANS
+                for encoding in ['iso-8859-1', 'latin1', 'utf-8-sig', 'utf-8']:
                     try:
-                        # Trade-off: Processamento Incremental para volume variável
                         reader = pd.read_csv(file_path, sep=None, engine='python', 
                                            chunksize=50000, encoding=encoding)
                         for chunk in reader:
                             chunk = self.normalize_columns(chunk)
                             
-                            # FILTRO DE CONTEÚDO: Identifica despesas pela Descrição da conta 
                             if 'Descricao' in chunk.columns:
                                 mask = chunk['Descricao'].astype(str).str.contains('DESPESA|EVENTO|SINISTRO', case=False, na=False)
                                 chunk = chunk[mask].copy()
                             
-                            # Normalização do valor (trata vírgulas e converte para float)
                             if 'ValorDespesas' in chunk.columns:
                                 chunk['ValorDespesas'] = pd.to_numeric(chunk['ValorDespesas'].astype(str).str.replace(',', '.'), errors='coerce')
                             
-                            # Mantemos apenas o RegistroANS para consolidação
                             cols_to_keep = [c for c in ['RegistroANS', 'ValorDespesas'] if c in chunk.columns]
                             if cols_to_keep:
                                 chunk = chunk[cols_to_keep]
                                 chunk['Ano'] = year
                                 chunk['Trimestre'] = quarter
                                 df_list.append(chunk)
-                        break # Se funcionou com este encoding, para o loop
+                        break 
                     except: continue
             
             if df_list:
@@ -104,24 +98,20 @@ class DataProcessor:
         csv_path = os.path.join(self.data_dir, 'consolidado_despesas.csv')
         zip_path = os.path.join(self.data_dir, 'consolidado_despesas.zip')
 
-        # Colunas obrigatórias conforme exigência do item 1.3 
         cols = ['CNPJ', 'RazaoSocial', 'Trimestre', 'Ano', 'ValorDespesas']
         
-        # ATUALIZAÇÃO: Mudança para 'utf-8-sig' para que Excel/Windows reconheçam os acentos corretamente
+        # CORREÇÃO DE ESCRITA: Usar 'utf-8-sig' para que o arquivo intermediário não quebre acentos
         df.to_csv(csv_path, index=False, encoding='utf-8-sig', columns=cols)
 
-        # Compactação final
         with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as z:
             z.write(csv_path, arcname='consolidado_despesas.csv')
         
-        print(f"\nSucesso! Arquivo final gerado com encoding UTF-8-SIG: {zip_path}")
+        print(f"\nSucesso! Arquivo final gerado: {zip_path}")
 
     def run(self):
-        """Orquestra o fluxo do Teste 1 usando a Estratégia de Identificador Único."""
+        """Orquestra o fluxo do Teste 1."""
         self.unzip_files()
         all_dfs = []
-        
-        print(f"Arquivos na pasta /data: {os.listdir(self.data_dir)}")
         
         for file in os.listdir(self.data_dir):
             if self.is_target_file(file):
@@ -142,7 +132,7 @@ class DataProcessor:
             cleaned_df = self.clean_and_consolidate(combined_df)
             self.save_final_output(cleaned_df)
         else:
-            print("Nenhum dado compatível foi encontrado. Verifique se os arquivos CSV estão na pasta /data.")
+            print("Nenhum dado compatível foi encontrado.")
 
 if __name__ == "__main__":
     processor = DataProcessor()
