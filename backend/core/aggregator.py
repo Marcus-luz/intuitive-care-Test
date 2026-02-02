@@ -4,7 +4,7 @@ import os
 class DataAggregator:
     """
     2.3: Responsável por agrupar os dados e calcular métricas estatísticas
-    conforme exigido pelo teste (Total, Média e Desvio Padrão)[cite: 79, 82].
+    conforme exigido pelo teste (Total, Média e Desvio Padrão).
     """
     def __init__(self, data_dir):
         # Ajuste Sênior: Recebe o caminho absoluto injetado pelo main.py
@@ -36,11 +36,12 @@ class DataAggregator:
         return agg_df
 
     def save_report(self, df_final):
-        """Salva o resultado final em despesas_agregadas.csv[cite: 89]."""
+        """Salva o resultado final em despesas_agregadas.csv."""
         output_path = os.path.join(self.data_dir, 'despesas_agregadas.csv')
         
-        # 3.3: Salvamento garantindo o encoding UTF-8 solicitado 
-        df_final.to_csv(output_path, index=False, encoding='utf-8')
+        # ATUALIZAÇÃO: Alterado para 'utf-8-sig' para garantir que os nomes das operadoras
+        # com acentos e cedilhas sejam exibidos corretamente no Windows, Excel e MySQL.
+        df_final.to_csv(output_path, index=False, encoding='utf-8-sig')
         
-        print(f"Relatório de agregação salvo com sucesso em: {output_path}")
+        print(f"Relatório de agregação salvo com sucesso (UTF-8-SIG) em: {output_path}")
         return output_path

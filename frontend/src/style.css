@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Estilos globais básicos para garantir uma boa UX */
+body {
+  margin: 0;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  background-color: #f9fafb; /* Cor de fundo leve (gray-50) */
+  color: #1f2937; /* Cor do texto (gray-800) */
+}
+
+#app {
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Garante que tabelas e gráficos tenham espaço para respirar */
+table {
+  border-spacing: 0;
+  width: 100%;
+}

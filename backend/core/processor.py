@@ -17,7 +17,7 @@ class DataProcessor:
         }
 
     def unzip_files(self):
-        """1.2: Extrai todos os arquivos ZIP na pasta data automaticamente[cite: 33, 34]."""
+        """1.2: Extrai todos os arquivos ZIP na pasta data automaticamente."""
         for item in os.listdir(self.data_dir):
             if item.endswith('.zip') and 'consolidado' not in item:
                 file_path = os.path.join(self.data_dir, item)
@@ -31,7 +31,7 @@ class DataProcessor:
         return filename.lower().endswith('.csv') and 'consolidado' not in filename.lower() and 'operadoras' not in filename.lower()
 
     def normalize_columns(self, df):
-        """1.2: Identifica automaticamente a estrutura e normaliza os dados[cite: 37]."""
+        """1.2: Identifica automaticamente a estrutura e normaliza os dados."""
         renamed = {}
         for target, synonyms in self.column_map.items():
             for col in df.columns:
@@ -41,15 +41,16 @@ class DataProcessor:
         return df.rename(columns=renamed)
 
     def process_file(self, file_path, year, quarter):
-        """1.2: Processamento incremental (Chunks) filtrando por conteúdo[cite: 35, 38]."""
+        """1.2: Processamento incremental (Chunks) filtrando por conteúdo."""
         ext = os.path.splitext(file_path)[1].lower()
         df_list = []
 
         try:
             if ext in ['.csv', '.txt']:
-                for encoding in ['utf-8', 'latin1']:
+                # ATUALIZAÇÃO: Adicionado 'iso-8859-1' para leitura correta de acentos nos arquivos da ANS
+                for encoding in ['iso-8859-1', 'utf-8', 'latin1']:
                     try:
-                        # Trade-off: Processamento Incremental para volume variável [cite: 38, 39]
+                        # Trade-off: Processamento Incremental para volume variável
                         reader = pd.read_csv(file_path, sep=None, engine='python', 
                                            chunksize=50000, encoding=encoding)
                         for chunk in reader:
@@ -71,7 +72,7 @@ class DataProcessor:
                                 chunk['Ano'] = year
                                 chunk['Trimestre'] = quarter
                                 df_list.append(chunk)
-                        break
+                        break # Se funcionou com este encoding, para o loop
                     except: continue
             
             if df_list:
@@ -80,50 +81,40 @@ class DataProcessor:
             print(f"Aviso: Erro ao processar {file_path}: {e}")
         return None
 
-    # =========================================================================
-    # NOVA ESTRATÉGIA ITEM 1.3: CONSOLIDAÇÃO POR IDENTIFICADOR ÚNICO (REG_ANS)
-    # =========================================================================
-
     def clean_and_consolidate(self, df):
-        """1.3: Saneamento financeiro e preparação do contrato de saída[cite: 40, 43]."""
+        """1.3: Saneamento financeiro e preparação do contrato de saída."""
         print("Iniciando saneamento dos dados financeiros...")
 
-        # A. Tratamento de Valores zerados ou negativos 
-        # Justificativa: Despesas de sinistros devem ser positivas para análise crítica.
         initial_count = len(df)
         df = df[df['ValorDespesas'] > 0].copy()
         print(f"-> Removidos {initial_count - len(df)} registros inválidos (<= 0).")
 
-        # B. Normalização de formatos de data/trimestre 
         df['Trimestre'] = df['Trimestre'].astype(str).str.strip().str.upper()
         df['Ano'] = df['Ano'].astype(str).str.strip()
 
-        # C. Estratégia de Identificador Único: Preparação para o Teste 2
-        # Como o dado contábil original não possui CNPJ nem Razão Social,
-        # usamos o RegistroANS como ID único para satisfazer as colunas do 1.3.
-        # O preenchimento real será feito no Teste 2.2 (Enriquecimento).
-        df['CNPJ'] = df['RegistroANS'].astype(str).str.zfill(6) # Usamos o REG_ANS como ID temporário
+        df['CNPJ'] = df['RegistroANS'].astype(str).str.zfill(6) 
         df['RazaoSocial'] = "PENDENTE_ENRIQUECIMENTO"
 
-        # D. Tratamento de duplicatas por Identificador/Ano/Trimestre [cite: 45]
         df = df.drop_duplicates(subset=['CNPJ', 'Ano', 'Trimestre'], keep='first')
 
         return df
 
     def save_final_output(self, df):
-        """1.3: Gera o CSV consolidado com as 5 colunas obrigatórias e zipa[cite: 41, 42, 52]."""
+        """1.3: Gera o CSV consolidado com as 5 colunas obrigatórias e zipa."""
         csv_path = os.path.join(self.data_dir, 'consolidado_despesas.csv')
         zip_path = os.path.join(self.data_dir, 'consolidado_despesas.zip')
 
         # Colunas obrigatórias conforme exigência do item 1.3 
         cols = ['CNPJ', 'RazaoSocial', 'Trimestre', 'Ano', 'ValorDespesas']
-        df.to_csv(csv_path, index=False, encoding='utf-8', columns=cols)
+        
+        # ATUALIZAÇÃO: Mudança para 'utf-8-sig' para que Excel/Windows reconheçam os acentos corretamente
+        df.to_csv(csv_path, index=False, encoding='utf-8-sig', columns=cols)
 
-        # Compactação final [cite: 52]
+        # Compactação final
         with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as z:
             z.write(csv_path, arcname='consolidado_despesas.csv')
         
-        print(f"\nSucesso! Arquivo final gerado: {zip_path}")
+        print(f"\nSucesso! Arquivo final gerado com encoding UTF-8-SIG: {zip_path}")
 
     def run(self):
         """Orquestra o fluxo do Teste 1 usando a Estratégia de Identificador Único."""
@@ -136,7 +127,6 @@ class DataProcessor:
             if self.is_target_file(file):
                 print(f"Processando arquivo: {file}")
                 
-                # Extração resiliente de Metadados Temporais
                 year_match = re.search(r'20\d{2}', file)
                 year = year_match.group() if year_match else "2024"
                 

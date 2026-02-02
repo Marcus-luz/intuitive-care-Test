@@ -1,0 +1,16 @@
+# Web Framework e Servidor (Teste 4)
+fastapi==0.104.1
+uvicorn==0.24.0
+python-multipart==0.0.6
+
+# Processamento de Dados (Teste 1 e 2)
+pandas==2.1.3
+requests==2.31.0
+beautifulsoup4==4.12.2
+lxml==4.9.3
+
+# Banco de Dados (Teste 3)
+mysql-connector-python==8.2.0
+
+# Utilitários (Opcional, mas recomendado)
+python-dotenv==1.0.0

@@ -1,0 +1,63 @@
+{
+	"info": {
+		"name": "Intuitive Care API - Teste 4",
+		"description": "Coleção para demonstração das rotas da API de Operadoras de Saúde.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Listar Operadoras (Paginado)",
+			"request": {
+				"method": "GET",
+				"url": {
+					"raw": "http://localhost:8000/api/operadoras?page=1&limit=10&q=unimed",
+					"host": ["localhost"],
+					"port": "8000",
+					"path": ["api", "operadoras"],
+					"query": [
+						{ "key": "page", "value": "1" },
+						{ "key": "limit", "value": "10" },
+						{ "key": "q", "value": "unimed", "description": "Busca opcional" }
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Detalhes da Operadora",
+			"request": {
+				"method": "GET",
+				"url": {
+					"raw": "http://localhost:8000/api/operadoras/005711",
+					"host": ["localhost"],
+					"port": "8000",
+					"path": ["api", "operadoras", "005711"]
+				}
+			}
+		},
+		{
+			"name": "Histórico de Despesas",
+			"request": {
+				"method": "GET",
+				"url": {
+					"raw": "http://localhost:8000/api/operadoras/005711/despesas",
+					"host": ["localhost"],
+					"port": "8000",
+					"path": ["api", "operadoras", "005711", "despesas"]
+				}
+			}
+		},
+		{
+			"name": "Estatísticas Gerais",
+			"request": {
+				"method": "GET",
+				"url": {
+					"raw": "http://localhost:8000/api/estatisticas",
+					"host": ["localhost"],
+					"port": "8000",
+					"path": ["api", "estatisticas"]
+				}
+			}
+		}
+	]
+}
