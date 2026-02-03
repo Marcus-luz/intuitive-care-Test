@@ -590,15 +590,6 @@ Alternativas consideradas:
 
 **Princípio aplicado:** **KISS (Keep It Simple, Stupid)**
 
----
-
-Se quiser, posso agora:
-
-* 🔹 **fundir isso diretamente na sua README completa**,
-* 🔹 entregar uma versão **em inglês**, ou
-* 🔹 gerar uma **README com badges profissionais** (Python | FastAPI | Vue | MySQL | ETL).
-
-Basta me dizer como prefere 🚀
 
 
 
