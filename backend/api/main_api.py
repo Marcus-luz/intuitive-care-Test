@@ -88,11 +88,11 @@ def get_stats():
     conn = get_db_connection()
     cursor = conn.cursor(dictionary=True)
     try:
-        # Top 5 operadoras por gasto [cite: 145]
+        # Top 5 operadoras por gasto 
         cursor.execute("SELECT razao_social, total_despesas FROM despesas_agregadas ORDER BY total_despesas DESC LIMIT 5")
         top_5 = cursor.fetchall()
         
-        # Distribuição por UF conforme item 4.3 [cite: 171]
+        # Distribuição por UF conforme item 4.3
         cursor.execute("SELECT uf, SUM(total_despesas) as despesa_uf FROM despesas_agregadas GROUP BY uf")
         uf_dist = cursor.fetchall()
         

@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS despesas_consolidadas (
 CREATE TABLE IF NOT EXISTS despesas_agregadas (
     id INT AUTO_INCREMENT PRIMARY KEY,
     razao_social VARCHAR(255) NOT NULL,
-    uf CHAR(2) NOT NULL,                  -- ISO 3166-2 para estados brasileiros
+    uf CHAR(2) NOT NULL,                  
     total_despesas DECIMAL(18, 2) NOT NULL,
     media_trimestral DECIMAL(18, 2) NOT NULL,
     desvio_padrao DECIMAL(18, 2) DEFAULT 0.00
