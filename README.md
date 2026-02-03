@@ -323,6 +323,29 @@ http://localhost:5173
 
 ---
 
+## 🛠️ Configuração do Ambiente (Importante)
+
+Para que o projeto funcione corretamente na sua máquina, siga estes passos:
+
+1. **Banco de Dados (MySQL 8.0):**
+   - Certifique-se de ter uma instância do **MySQL 8.0** rodando localmente.
+   - Execute o script `backend/db/setup.sql` para criar as tabelas necessárias.
+
+2. **Variáveis de Ambiente (.env):**
+   - Na raiz do projeto, você encontrará um arquivo `.env` (ou crie um baseado no `.env.example`).
+   - **Ajuste as credenciais** (`DB_USER`, `DB_PASS`, `DB_HOST`) de acordo com a sua configuração local do MySQL.
+   - Exemplo:
+     ```env
+     DB_HOST=localhost
+     DB_USER=seu_usuario
+     DB_PASS=sua_senha
+     DB_NAME=intuitive_care
+     ```
+
+3. **Dependências:**
+   - Instale as bibliotecas necessárias: `pip install -r requirements.txt`.
+   - O projeto agora utiliza `python-dotenv` para carregar as configurações de forma segura.
+
 
 # 🛠️ Guia Completo de Execução (Passo a Passo)
 
