@@ -6,12 +6,17 @@ def import_all_to_mysql():
     base_dir = os.path.dirname(os.path.abspath(__file__))
     data_dir = os.path.join(base_dir, '..', '..', 'data')
     
-    # Conexão com a base de dados utilizando a tua senha
+    # AJUSTE PARA DOCKER: Lê do ambiente ou usa padrão local
+    DB_HOST = os.getenv("DB_HOST", "localhost")
+    DB_USER = os.getenv("DB_USER", "root")
+    DB_PASS = os.getenv("DB_PASS", "Marcusluz1!") # Sua senha atual como padrão
+    DB_NAME = os.getenv("DB_NAME", "intuitive_care")
+
     conn = mysql.connector.connect(
-        host="localhost", 
-        user="root", 
-        password="Marcusluz1!", 
-        database="intuitive_care", 
+        host=DB_HOST, 
+        user=DB_USER, 
+        password=DB_PASS, 
+        database=DB_NAME, 
         charset='utf8mb4'
     )
     cursor = conn.cursor()

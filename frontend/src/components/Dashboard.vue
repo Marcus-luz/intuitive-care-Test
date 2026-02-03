@@ -8,6 +8,7 @@ import {
 // Registro obrigatório dos componentes do Chart.js
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
 
+
 // --- ESTADOS DA TABELA PRINCIPAL ---
 const operadoras = ref([]);
 const total = ref(0);

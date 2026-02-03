@@ -320,82 +320,181 @@ http://localhost:5173
 
 ---
 
-# 📌 Guia Completo de Execução (Passo a Passo)
 
-## ✅ Pré-requisitos
+# 🛠️ Guia Completo de Execução (Passo a Passo)
 
-```sh
-Python 3.10+
-Node.js + NPM
-MySQL 8.0 ativo
-```
+Este projeto foi desenhado para ser **simples de executar, resiliente e reproduzível em ambiente local**, sem necessidade de configurações manuais complexas entre pipeline de dados e aplicação.
 
-## 🔹 Configuração do Banco
+---
+
+## ✅ 1. Pré-requisitos
+
+Certifique-se de ter instalado e em funcionamento:
+
+* **Python 3.11+**
+* **Node.js 18+** (Frontend)
+* **MySQL 8.0+** rodando localmente
+
+---
+
+## 🗄️ 2. Configuração do Banco de Dados
+
+Antes de rodar o sistema, crie o schema no MySQL (o pipeline criará as tabelas automaticamente):
 
 ```sql
-CREATE DATABASE intuitive_care;
+CREATE DATABASE IF NOT EXISTS intuitive_care;
 ```
 
-```sh
-mysql -u seu_usuario -p intuitive_care < backend/db/setup.sql
-```
+> ✔️ O restante da estrutura (tabelas, índices e carga inicial) será gerenciado automaticamente pelo pipeline.
 
-## 🔹 Ambiente Python
+---
 
-```sh
-python -m venv venv
-```
+## ⚙️ 3. Backend e Pipeline de Dados (Execução Orquestrada)
 
-Ativar ambiente:
+O projeto inclui um **script orquestrador único** que:
 
-```sh
-Windows: venv\Scripts\activate
-Linux/Mac: source venv/bin/activate
-```
+* valida o ambiente,
+* executa o ETL completo,
+* carrega os dados no MySQL,
+* e sobe a API automaticamente.
 
-Instalar dependências:
+### 🔹 Passos de execução
 
-```sh
+1️⃣ Navegue até a **raiz do projeto**
+
+2️⃣ Instale as dependências:
+
+```bash
 pip install -r requirements.txt
 ```
 
-## 🔹 Rodar Pipeline Completo
+3️⃣ Inicie o processo completo:
 
-```sh
-python run_etl.py
-python backend/core/loader.py
+```bash
+python main.py
 ```
 
-## 🔹 Subir API
+### 🔄 O que esse comando faz?
 
-```sh
-cd backend/api
-uvicorn main_api:app --reload
-```
+Ele executa **três etapas automaticamente**:
 
-## 🔹 Subir Frontend
+**🔹 Validação**
 
-```sh
+* Testa conexão com o MySQL antes de qualquer processamento.
+
+**🔹 ETL – Testes 1 e 2**
+
+* Faz **Web Scraping** dos dados públicos da ANS
+* Limpa e padroniza os CSVs com **Pandas**
+* Calcula **média e desvio padrão** das despesas
+* Carrega tudo no MySQL de forma estruturada
+
+**🔹 API – Teste 4**
+
+* Após o sucesso do ETL, o **FastAPI é iniciado automaticamente**.
+
+---
+
+## 🖥️ 4. Frontend (Dashboard Analítico)
+
+Em **um novo terminal**, faça:
+
+```bash
 cd frontend
 npm install
 npm run dev
 ```
 
----
-
-## 📬 Documentação da API (Postman)
-
-O repositório inclui:
+Acesse o Dashboard em:
 
 ```
-collection.json
+http://localhost:5173
 ```
 
-Dica:
+---
 
-> Para funcionar corretamente, o FastAPI **precisa estar rodando**.
+# 🚀 Diferenciais Técnicos e Resiliência
+
+### 🛡️ Pipeline “À Prova de Falhas”
+
+O sistema inclui:
+
+* Tratamento para **falhas de rede** no site da ANS
+* Validação de integridade dos CSVs baixados
+* Logs estruturados em:
+
+```text
+pipeline.log
+```
+
+### 🌍 Configuração via Variáveis de Ambiente
+
+Embora configurado para **localhost por padrão**, o projeto usa:
+
+```python
+os.getenv(...)
+```
+
+Isso permite alterar:
+
+* host do MySQL
+* usuário
+* senha
+* porta
+
+**sem modificar o código-fonte.**
+
+### ⚡ Performance por Design
+
+* Média e desvio padrão são **pré-calculados no ETL**
+* A API apenas lê dados já agregados
+* Resultado: respostas extremamente rápidas no Dashboard.
 
 ---
+
+# 🔮 Melhorias Futuras (Roadmap)
+
+### 🐳 Dockerização Total
+
+Criar:
+
+* `Dockerfile`
+* `docker-compose.yml`
+
+Para:
+
+* isolar ambiente
+* facilitar deploy
+* garantir portabilidade total
+
+> Escolha preterida nesta versão inicial para priorizar simplicidade de execução (KISS).
+
+### 🧪 Testes Automatizados
+
+Adicionar cobertura com **pytest** para:
+
+* DataProcessor
+
+# Por que aplicar isso?
+* Isolamento: O teste acima não baixa nada da internet e não apaga seus dados reais. Ele cria tudo em uma pasta que o   próprio Windows/Linux deleta depois.
+
+# Testes de API (Contrato e Integração)
+
+ * O teste adicional valioso seria garantir que, se você mudar o nome de uma coluna no banco de dados, a API não "quebre" silenciosamente. 
+
+* O que testar: Se o endpoint /api/operadoras retorna um status 200 OK e se a estrutura do JSON é exatamente o que o Frontend espera.
+
+
+### 📊 Logging e Monitoramento
+
+Integrar ferramentas de observabilidade para:
+
+* rastreio de erros em tempo real
+* métricas de performance do pipeline
+* alertas automáticos
+
+---
+
 
 # ⚖️ Análise Exaustiva de Trade-offs Técnicos
 

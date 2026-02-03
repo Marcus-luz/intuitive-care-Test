@@ -2,6 +2,7 @@ from fastapi import FastAPI, Query, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import mysql.connector
 from typing import Optional
+import os
 
 app = FastAPI(title="Intuitive Care API v2.0")
 
@@ -13,11 +14,12 @@ app.add_middleware(
 )
 
 def get_db_connection():
+    # AJUSTE PARA DOCKER: Busca as configurações do docker-compose.yml
     return mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="Marcusluz1!", 
-        database="intuitive_care",
+        host=os.getenv("DB_HOST", "localhost"),
+        user=os.getenv("DB_USER", "root"),
+        password=os.getenv("DB_PASS", "Marcusluz1!"), 
+        database=os.getenv("DB_NAME", "intuitive_care"),
         charset='utf8mb4',           
         use_unicode=True,             
         collation='utf8mb4_general_ci' 

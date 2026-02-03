@@ -1,50 +1,111 @@
+import os
+import pandas as pd
+import logging
+import sys
+
+
 from backend.core.crawler import fetch_ans_files, fetch_operator_registry
 from backend.core.processor import DataProcessor
 from backend.core.enricher import DataEnricher
 from backend.core.aggregator import DataAggregator
-import os
-import pandas as pd
+from backend.core.loader import import_all_to_mysql # IMPORTANTE: Adicionado para carregar no banco
+
+# Configuração de Logging Profissional
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler("pipeline.log"),
+        logging.StreamHandler(sys.stdout)
+    ]
+)
+logger = logging.getLogger(__name__)
+
+def check_db_connection():
+    """Verifica se o banco está acessível antes de começar o processo longo."""
+    try:
+        import mysql.connector
+        # Tenta conectar rápido para validar credenciais
+        conn = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="Marcusluz1!", # Sua senha padrão
+            database="intuitive_care"
+        )
+        conn.close()
+        logger.info("✅ Conexão com o banco de dados validada.")
+        return True
+    except Exception as e:
+        logger.error(f"❌ Falha de conexão com o banco: {e}. Certifique-se que o MySQL está rodando.")
+        return False
 
 def executar_pipeline():
-    print("=== INICIANDO PIPELINE DE DADOS ANS ===\n")
+    logger.info("=== INICIANDO PIPELINE DE DADOS ANS ===")
 
-    # Caminho absoluto da raiz do projeto onde está a main.py
+    if not check_db_connection():
+        logger.critical("Execução abortada: Banco de dados inacessível.")
+        return False
+
     path_base = os.path.dirname(os.path.abspath(__file__))
     pasta_data_real = os.path.join(path_base, 'data')
 
-    # [cite_start]Passo 1: Extração (Item 1.1 e 2.2 do PDF) [cite: 29, 68]
-    print("[1/4] Baixando arquivos da ANS...")
-    fetch_ans_files()
-    fetch_operator_registry()
+    # Passo 1: Extração
+    try:
+        logger.info("[1/5] Baixando arquivos da ANS (Scraping)...")
+        fetch_ans_files()
+        fetch_operator_registry()
+    except Exception as e:
+        logger.error(f"Erro no Scraping: {e}")
+        return False
 
-    # [cite_start]Passo 2: Processamento e Consolidação (Item 1.2 e 1.3) [cite: 32, 40]
-    print("\n[2/4] Processando ZIPs e gerando consolidado...")
-    processor = DataProcessor(data_dir=pasta_data_real)
-    processor.run() 
+    # Passo 2: Processamento
+    try:
+        logger.info("[2/5] Processando ZIPs e consolidando dados...")
+        processor = DataProcessor(data_dir=pasta_data_real)
+        processor.run() 
+    except Exception as e:
+        logger.error(f"Erro no processamento de arquivos: {e}")
+        return False
 
-    # [cite_start]Passo 3: Enriquecimento e Validação (Item 2.1 e 2.2) [cite: 57, 67]
-    print("\n[3/4] Enriquecendo dados e validando registros...")
-    path_consolidado = os.path.join(pasta_data_real, 'consolidado_despesas.csv')
-
-    if os.path.exists(path_consolidado):
-        df_consolidado = pd.read_csv(path_consolidado)
+    # Passo 3: Enriquecimento
+    try:
+        logger.info("[3/5] Enriquecendo dados e validando registros...")
+        path_consolidado = os.path.join(pasta_data_real, 'consolidado_despesas.csv')
         
-        # Injetamos o caminho correto para que o Enricher ache o operadoras_ativas.csv
+        if not os.path.exists(path_consolidado):
+            raise FileNotFoundError(f"Arquivo {path_consolidado} não foi gerado.")
+
+        df_consolidado = pd.read_csv(path_consolidado)
         enricher = DataEnricher(data_dir=pasta_data_real) 
         df_enriquecido = enricher.enrich(df_consolidado)
         
-        # [cite_start]Verificação de segurança: O Join funcionou e trouxe a coluna UF? [cite: 72]
-        if 'UF' in df_enriquecido.columns:
-            # [cite_start]Passo 4: Agregação (Item 2.3) [cite: 79]
-            print("\n[4/4] Gerando estatísticas finais (Média e Desvio Padrão)...")
-            aggregator = DataAggregator(data_dir=pasta_data_real)
-            df_final = aggregator.aggregate_expenses(df_enriquecido)
-            aggregator.save_report(df_final)
-            print("\n=== PIPELINE CONCLUÍDO COM SUCESSO! ===")
-        else:
-            print("[!] ERRO: O enriquecimento falhou. Verifique se o cadastro foi baixado.")
-    else:
-        print(f"[!] ERRO: Arquivo {path_consolidado} não encontrado.")
+        if 'UF' not in df_enriquecido.columns:
+            raise ValueError("O enriquecimento falhou: Coluna UF não encontrada.")
+    except Exception as e:
+        logger.error(f"Erro no enriquecimento: {e}")
+        return False
+
+    # Passo 4: Agregação
+    try:
+        logger.info("[4/5] Gerando estatísticas (Média e Desvio Padrão)...")
+        aggregator = DataAggregator(data_dir=pasta_data_real)
+        df_final = aggregator.aggregate_expenses(df_enriquecido)
+        aggregator.save_report(df_final)
+    except Exception as e:
+        logger.info(f"Erro na agregação: {e}")
+        return False
+
+    # Passo 5: Carga Final (Onde seu script antigo parava, mas o novo carrega no SQL)
+    try:
+        logger.info("[5/5] Carregando dados processados para o MySQL...")
+        import_all_to_mysql()
+        logger.info("✨ PIPELINE DE DADOS CONCLUÍDO COM SUCESSO! ✨")
+        return True
+    except Exception as e:
+        logger.error(f"Erro na carga do banco de dados: {e}")
+        return False
 
 if __name__ == "__main__":
-    executar_pipeline()
+    sucesso = executar_pipeline()
+    if not sucesso:
+        sys.exit(1)
