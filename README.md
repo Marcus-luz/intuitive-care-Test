@@ -38,7 +38,10 @@ A solução foi projetada seguindo os princípios **KISS (Keep It Simple, Stupid
 ├── data/               # Arquivos brutos e processados
 ├── frontend/           # Aplicação Vue.js 3 (Vite + Tailwind CSS)
 ├── run_etl.py          # Orquestrador do pipeline (Testes 1 e 2)
+├── main.py             # script orquestrador único
+├── test                # Testes Automatizados
 └── requirements.txt    # Dependências Python
+
 ```
 
 ---
