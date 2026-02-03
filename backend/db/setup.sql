@@ -29,6 +29,27 @@ CREATE TABLE IF NOT EXISTS despesas_agregadas (
     desvio_padrao DECIMAL(18, 2) DEFAULT 0.00
 );
 
+-- 4. Tabela de Cadastro de Operadoras (Necessária para o Item 2.2 e Query 2 de UF)
+CREATE TABLE IF NOT EXISTS operadoras_ativas (
+    registro_ans VARCHAR(20) PRIMARY KEY,
+    cnpj VARCHAR(20),
+    razao_social VARCHAR(255),
+    nome_fantasia VARCHAR(255),
+    modalidade VARCHAR(100),
+    logradouro VARCHAR(255),
+    numero VARCHAR(50),
+    complemento VARCHAR(255),
+    bairro VARCHAR(100),
+    cidade VARCHAR(100),
+    uf CHAR(2), -- ESSENCIAL PARA A QUERY ANALÍTICA 2
+    cep VARCHAR(10),
+    telefone VARCHAR(20),
+    email VARCHAR(100),
+    representante VARCHAR(255),
+    cargo_representante VARCHAR(100),
+    data_registro_ans DATE
+);
+
 -- =============================================================================
 -- OTIMIZAÇÃO (PENSAMENTO CRÍTICO)
 -- Índices criados para acelerar as consultas analíticas dos itens 3.4 e 3.5.

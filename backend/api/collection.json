@@ -1,7 +1,7 @@
 {
 	"info": {
 		"name": "Intuitive Care API - Teste 4",
-		"description": "Coleção para demonstração das rotas da API de Operadoras de Saúde.",
+		"description": "Coleção para demonstração das rotas da API de Operadoras de Saúde, incluindo exemplos de sucesso e erro conforme requisitos do teste v2.0.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -9,55 +9,96 @@
 			"name": "Listar Operadoras (Paginado)",
 			"request": {
 				"method": "GET",
+				"header": [],
 				"url": {
-					"raw": "http://localhost:8000/api/operadoras?page=1&limit=10&q=unimed",
-					"host": ["localhost"],
-					"port": "8000",
+					"raw": "{{baseUrl}}/api/operadoras?page=1&limit=10&q=unimed",
+					"host": ["{{baseUrl}}"],
 					"path": ["api", "operadoras"],
 					"query": [
 						{ "key": "page", "value": "1" },
 						{ "key": "limit", "value": "10" },
-						{ "key": "q", "value": "unimed", "description": "Busca opcional" }
+						{ "key": "q", "value": "unimed", "description": "Busca por nome ou registro ANS" }
 					]
 				}
 			},
-			"response": []
+			"response": [
+				{
+					"name": "200 OK - Lista de Operadoras",
+					"originalRequest": {
+						"method": "GET",
+						"url": {
+							"raw": "{{baseUrl}}/api/operadoras?page=1&limit=10&q=unimed",
+							"host": ["{{baseUrl}}"],
+							"path": ["api", "operadoras"],
+							"query": [{ "key": "page", "value": "1" }, { "key": "limit", "value": "10" }, { "key": "q", "value": "unimed" }]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [{ "key": "Content-Type", "value": "application/json" }],
+					"body": "{\n  \"total\": 1240,\n  \"page\": 1,\n  \"limit\": 10,\n  \"data\": [\n    {\n      \"registro_ans\": \"005711\",\n      \"cnpj\": \"00571123000100\",\n      \"razao_social\": \"UNIMED BELO HORIZONTE\",\n      \"nome_fantasia\": \"UNIMED BH\",\n      \"media_despesas_3t\": 1500450.75,\n      \"desvio_padrao_3t\": 12500.40\n    }\n  ]\n}"
+				}
+			]
 		},
 		{
 			"name": "Detalhes da Operadora",
 			"request": {
 				"method": "GET",
+				"header": [],
 				"url": {
-					"raw": "http://localhost:8000/api/operadoras/005711",
-					"host": ["localhost"],
-					"port": "8000",
+					"raw": "{{baseUrl}}/api/operadoras/005711",
+					"host": ["{{baseUrl}}"],
 					"path": ["api", "operadoras", "005711"]
 				}
-			}
+			},
+			"response": [
+				{
+					"name": "200 OK - Sucesso",
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [{ "key": "Content-Type", "value": "application/json" }],
+					"body": "{\n  \"registro_ans\": \"005711\",\n  \"cnpj\": \"00571123000100\",\n  \"razao_social\": \"UNIMED BELO HORIZONTE\",\n  \"nome_fantasia\": \"UNIMED BH\",\n  \"modalidade\": \"Cooperativa Médica\",\n  \"uf\": \"MG\",\n  \"media_despesas_3t\": 1500450.75,\n  \"desvio_padrao_3t\": 12500.40\n}"
+				},
+				{
+					"name": "404 Not Found - Operadora Inexistente",
+					"status": "Not Found",
+					"code": 404,
+					"_postman_previewlanguage": "json",
+					"header": [{ "key": "Content-Type", "value": "application/json" }],
+					"body": "{\n  \"detail\": \"Operadora com Registro ANS 999999 não encontrada na base de dados.\"\n}"
+				}
+			]
 		},
 		{
 			"name": "Histórico de Despesas",
 			"request": {
 				"method": "GET",
+				"header": [],
 				"url": {
-					"raw": "http://localhost:8000/api/operadoras/005711/despesas",
-					"host": ["localhost"],
-					"port": "8000",
+					"raw": "{{baseUrl}}/api/operadoras/005711/despesas",
+					"host": ["{{baseUrl}}"],
 					"path": ["api", "operadoras", "005711", "despesas"]
 				}
-			}
-		},
-		{
-			"name": "Estatísticas Gerais",
-			"request": {
-				"method": "GET",
-				"url": {
-					"raw": "http://localhost:8000/api/estatisticas",
-					"host": ["localhost"],
-					"port": "8000",
-					"path": ["api", "estatisticas"]
+			},
+			"response": [
+				{
+					"name": "200 OK - Histórico Trimestral",
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [{ "key": "Content-Type", "value": "application/json" }],
+					"body": "[\n  { \"trimestre\": \"2025-1T\", \"valor\": 1480000.00 },\n  { \"trimestre\": \"2025-2T\", \"valor\": 1520000.00 },\n  { \"trimestre\": \"2025-3T\", \"valor\": 1501352.25 }\n]"
 				}
-			}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8000",
+			"type": "string"
 		}
 	]
 }

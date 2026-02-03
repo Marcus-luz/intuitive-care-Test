@@ -35,7 +35,7 @@ def import_all_to_mysql():
                     float(r['Total_Despesas']), float(r['Media_Trimestral']), float(r['Desvio_Padrao'])
                 ))
         
-        # 2. CARREGAR TABELA DE HISTÓRICO (Corrigido para incluir CNPJ)
+        # 2. CARREGAR TABELA DE HISTÓRICO (Consolidadas)
         path_hist = os.path.join(data_dir, 'historico_final.csv')
         if os.path.exists(path_hist):
             print("Carregando histórico detalhado para os gráficos...")
@@ -45,11 +45,10 @@ def import_all_to_mysql():
             df_hist['ValorDespesas'] = pd.to_numeric(df_hist['ValorDespesas'], errors='coerce').fillna(0)
             df_hist['Trimestre'] = df_hist['Trimestre'].astype(str).str.extract(r'(\d+)').fillna(0).astype(int)
             df_hist['RazaoSocial'] = df_hist['RazaoSocial'].astype(str).str.strip()
-            df_hist['CNPJ'] = df_hist['CNPJ'].astype(str).str.strip() # Garante CNPJ limpo
+            df_hist['CNPJ'] = df_hist['CNPJ'].astype(str).str.strip() 
 
             cursor.execute("TRUNCATE TABLE despesas_consolidadas")
             
-            # AJUSTE: SQL agora inclui o campo 'cnpj' para evitar o erro 1364
             sql_hist = """
                 INSERT INTO despesas_consolidadas 
                 (cnpj, razao_social, trimestre, ano, valor_despesa) 
@@ -65,8 +64,37 @@ def import_all_to_mysql():
                     float(r['ValorDespesas'])
                 ))
 
+        # 3. CARREGAR CADASTRO DE OPERADORAS (Para Query 2 - UF)
+        path_ops = os.path.join(data_dir, 'operadoras_ativas.csv')
+        if os.path.exists(path_ops):
+            print("Carregando cadastro de operadoras (Master Data)...")
+            
+            # Lendo o CSV com o separador correto e encoding padrão da ANS
+            df_ops = pd.read_csv(path_ops, sep=';', encoding='latin1', dtype=str)
+            
+            # Limpeza: Converte valores nulos do Pandas (NaN) para None (NULL no MySQL)
+            df_ops = df_ops.where(pd.notnull(df_ops), None)
+
+            cursor.execute("TRUNCATE TABLE operadoras_ativas")
+            
+            sql_ops = """
+                INSERT IGNORE INTO operadoras_ativas 
+                (registro_ans, cnpj, razao_social, nome_fantasia, uf) 
+                VALUES (%s, %s, %s, %s, %s)
+            """
+            
+            # MAPEAMENTO CORRIGIDO DE ACORDO COM OS CABEÇALHOS DO SEU CSV
+            for _, r in df_ops.iterrows():
+                cursor.execute(sql_ops, (
+                    r['REGISTRO_OPERADORA'], 
+                    r['CNPJ'],
+                    r['Razao_Social'],       
+                    r['Nome_Fantasia'],      
+                    r['UF']
+                ))
+
         conn.commit()
-        print("✅ Sucesso: Tabelas Agregada e de Histórico atualizadas com CNPJ!")
+        print("✅ Sucesso: Todas as tabelas (Agregada, Histórico e Operadoras) atualizadas!")
 
     except Exception as e:
         print(f"❌ Erro na importação: {e}")
