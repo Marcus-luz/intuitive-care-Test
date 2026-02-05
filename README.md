@@ -392,8 +392,9 @@ Para garantir que o projeto execute com as versões corretas das bibliotecas e n
 1️⃣ Criar o ambiente virtual
 
 Na raiz do projeto, execute:
-
+```bash
 python -m venv venv
+```
 2️⃣ Ativar o ambiente
 
 Windows:
