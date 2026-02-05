@@ -384,15 +384,47 @@ O projeto inclui um **script orquestrador único** que:
 * carrega os dados no MySQL,
 * e sobe a API automaticamente.
 
-### 🔹 Passos de execução
+## ⚙️ 3.1. Configuração do Ambiente (Recomendado)
 
-1️⃣ Navegue até a **raiz do projeto**
+Para garantir que o projeto execute com as versões corretas das bibliotecas e não interfira em seu ambiente global de Python, recomenda-se utilizar um ambiente virtual isolado.
 
-2️⃣ Instale as dependências:
+🔹 Passo a passo
+1️⃣ Criar o ambiente virtual
 
+Na raiz do projeto, execute:
+
+python -m venv venv
+2️⃣ Ativar o ambiente
+
+Windows:
+```bash
+.\venv\Scripts\activate
+```
+
+Linux / macOS:
+```bash
+source venv/bin/activate
+```
+
+Você saberá que o ambiente está ativo quando aparecer algo como:
+
+(venv) C:\seu-projeto>
+3️⃣ Instalar dependências
+
+Com o ambiente ativo, execute:
 ```bash
 pip install -r requirements.txt
 ```
+🧩 Nota de Compatibilidade
+
+Este projeto utiliza o operador walrus (:=), portanto requer:
+
+✅ Python 3.8 ou superior
+
+📌 Recomendação oficial:
+👉 Utilize Python 3.11+ para melhor desempenho e compatibilidade.
+
+
 
 3️⃣ Inicie o processo completo:
 
