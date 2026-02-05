@@ -5,3 +5,9 @@ venv/
 env/
 node_modules/
 *.log
+
+# Ignorar dados e arquivos temporários
+data/*.zip
+data/*.xlsx
+data/*.csv
+pipeline.log
