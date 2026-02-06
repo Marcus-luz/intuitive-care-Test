@@ -444,7 +444,7 @@ Este projeto utiliza o operador walrus (:=), portanto requer:
 👉 Utilize Python 3.11+ para melhor desempenho e compatibilidade.
 
 
-
+```
 3️⃣ Inicie o processo completo:
 
 ```bash
