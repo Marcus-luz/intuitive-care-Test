@@ -12,14 +12,14 @@ O projeto automatiza o pipeline de dados da ANS — desde a coleta bruta via **W
 
 * [🏗️ 1. Visão Geral e Arquitetura](#1-visão-geral-e-arquitetura)
 * [📂 2. Estrutura do Repositório](#2-estrutura-do-repositório)
-* [🔹 Testes Técnicos Implementados](#-testes-técnicos-implementados)
+* [🔹 Testes Técnicos Implementados](#testes-técnicos-implementados)
     * [🕷️ 1. Web Scraping](#1-teste-de-integração-com-api-pública-web-scraping)
     * [⚙️ 2. ETL e Transformação](#2-teste-de-transformação-e-validação-de-dados-etl)
     * [🗄️ 3. Banco de Dados e SQL](#3-teste-de-banco-de-dados-e-sql)
     * [🖥️ 4. API + Dashboard](#4-api--dashboard)
-* [🚀 Guia Completo de Execução](#-guia-completo-de-execução-passo-a-passo)
-* [⚖️ Análise Exaustiva de Trade-offs](#-análise-exaustiva-de-trade-offs-técnicos)
-* [🔮 Melhorias Futuras](#-melhorias-futuras-roadmap)
+* [🚀 Guia Completo de Execução](#guia-completo-de-execução-passo-a-passo)
+* [⚖️ Análise Exaustiva de Trade-offs](#análise-exaustiva-de-trade-offs-técnicos)
+* [🔮 Melhorias Futuras](#melhorias-futuras-roadmap)
 
 ---
 
