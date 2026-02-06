@@ -546,6 +546,12 @@ Para:
 
 > Escolha preterida nesta versão inicial para priorizar simplicidade de execução (KISS).
 
+### ☁️ Migração para Nuvem (Cloud-Ready)
+
+* **Managed Database (AWS RDS for MySQL):** Planejado para futuras versões, visando tornar o projeto totalmente independente de infraestrutura local. 
+    * **Vantagem:** Isso eliminaria a necessidade de o usuário/recrutador configurar um MySQL 8.0 manualmente.
+    * **Escalabilidade:** O uso do RDS permite que a aplicação se conecte a uma instância gerenciada com alta disponibilidade, backups automáticos e segurança robusta (VPC, Security Groups), seguindo os padrões da indústria.
+
 ### 🧪 Testes Automatizados
 
 Adicionar cobertura com **pytest** para:
@@ -557,7 +563,7 @@ Adicionar cobertura com **pytest** para:
 
 # Testes de API (Contrato e Integração)
 
- * O teste adicional valioso seria garantir que, se você mudar o nome de uma coluna no banco de dados, a API não "quebre" silenciosamente. 
+* O teste adicional valioso seria garantir que, se você mudar o nome de uma coluna no banco de dados, a API não "quebre" silenciosamente. 
 
 * O que testar: Se o endpoint /api/operadoras retorna um status 200 OK e se a estrutura do JSON é exatamente o que o Frontend espera.
 
