@@ -1,6 +1,6 @@
 # 🚀 Desafio Técnico – Estágio em Tecnologia (v2.0)
 
-**Candidato:** Marcus Vinicius da Luz Arzújo
+**Candidato:** Marcus Vinicius da Luz Araújo
 **Stack Principal:** Python | FastAPI | Vue.js 3 | MySQL
 
 Este repositório contém a solução do desafio técnico para a **Intuitive Care**.
@@ -347,8 +347,8 @@ Para que o projeto funcione corretamente na sua máquina, siga estes passos:
    - Execute o script `backend/db/setup.sql` para criar as tabelas necessárias.
 
 2. **Variáveis de Ambiente (.env):**
-   - Na raiz do projeto, você encontrará um arquivo `.env` (ou crie um baseado no `.env.example`).
-   - **Ajuste as credenciais** (`DB_USER`, `DB_PASS`, `DB_HOST`) de acordo com a sua configuração local do MySQL.
+   - Como o arquivo .env original é ignorado por segurança, você deve copiar o conteúdo de .env.example para um novo arquivo chamado .env na raiz do projeto. Ajuste as credenciais (DB_USER, DB_PASS, DB_HOST) de acordo com a sua configuração local do MySQL."
+   
    - Exemplo:
      ```env
      DB_HOST=localhost

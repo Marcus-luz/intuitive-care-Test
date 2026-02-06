@@ -2,13 +2,24 @@ import os
 import pandas as pd
 import logging
 import sys
+from dotenv import load_dotenv
 
+# Força o Python a encontrar o .env na mesma pasta deste script
+basedir = os.path.abspath(os.path.dirname(__file__))
+load_dotenv(os.path.join(basedir, '.env'))
+
+# 2. Chame a função para carregar as variáveis do arquivo .env
+load_dotenv()
+print(f"DEBUG: Host do Banco: {os.getenv('DB_HOST')}")
+print(f"DEBUG: Senha carregada: {'SIM' if os.getenv('DB_PASS') else 'NÃO'}")
 
 from backend.core.crawler import fetch_ans_files, fetch_operator_registry
 from backend.core.processor import DataProcessor
 from backend.core.enricher import DataEnricher
 from backend.core.aggregator import DataAggregator
-from backend.core.loader import import_all_to_mysql # IMPORTANTE: Adicionado para carregar no banco
+from backend.core.loader import import_all_to_mysql 
+
+
 
 # Configuração de Logging Profissional
 logging.basicConfig(
@@ -22,15 +33,15 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 def check_db_connection():
-    """Verifica se o banco está acessível antes de começar o processo longo."""
     try:
         import mysql.connector
-        # Tenta conectar rápido para validar credenciais
+        import os
+        # preencher no .env ou na .env.example
         conn = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="Marcusluz1!", # Sua senha padrão
-            database="intuitive_care"
+            host=os.getenv("DB_HOST", "localhost"),
+            user=os.getenv("DB_USER", "root"),
+            password=os.getenv("DB_PASS"), 
+            database=os.getenv("DB_NAME", "intuitive_care")
         )
         conn.close()
         logger.info("✅ Conexão com o banco de dados validada.")
