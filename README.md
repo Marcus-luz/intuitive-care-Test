@@ -17,9 +17,11 @@ O projeto automatiza o pipeline de dados da ANS — desde a coleta bruta via **W
 * [⚙️ 2. ETL e Transformação](#2-teste-de-transformação-e-validação-de-dados-etl)
 * [🗄️ 3. Banco de Dados e SQL](#3-teste-de-banco-de-dados-e-sql)
 * [🖥️ 4. API + Dashboard](#4-api--dashboard)
+* [🛠️ Configuração do Ambiente (Importante)](#configuração-do-ambiente-importante)
 * [🛠️ Guia Completo de Execução](#guia-completo-de-execução-passo-a-passo)
-* [⚖️ Análise Exaustiva de Trade-offs](#análise-exaustiva-de-trade-offs-técnicos)
+* [🚀 Diferenciais Técnicos e Resiliência](#diferenciais-técnicos-e-resiliência)
 * [🔮 Melhorias Futuras (Roadmap)](#melhorias-futuras-roadmap)
+* [⚖️ Análise Exaustiva de Trade-offs](#análise-exaustiva-de-trade-offs-técnicos)
 
 ## 🏗️ 1. Visão Geral e Arquitetura
 
