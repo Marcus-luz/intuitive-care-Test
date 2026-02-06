@@ -10,19 +10,23 @@ O projeto automatiza o pipeline de dados da ANS — desde a coleta bruta via **W
 
 ## 📌 Sumário
 
-* [🏗️ 1. Visão Geral e Arquitetura](#1-visão-geral-e-arquitetura)
-* [📂 2. Estrutura do Repositório](#2-estrutura-do-repositório)
-* [🔹 Testes Técnicos Implementados](#-testes-técnicos-implementados)
-    * [🕷️ 1. Web Scraping](#1-teste-de-integração-com-api-pública-web-scraping)
-    * [⚙️ 2. ETL e Transformação](#2-teste-de-transformação-e-validação-de-dados-etl)
-    * [🗄️ 3. Banco de Dados e SQL](#3-teste-de-banco-de-dados-e-sql)
-    * [🖥️ 4. API + Dashboard](#4-api--dashboard)
-* [🚀 Guia Completo de Execução](#-guia-completo-de-execução-passo-a-passo)
-* [⚖️ Análise Exaustiva de Trade-offs](#-análise-exaustiva-de-trade-offs-técnicos)
-* [🔮 Melhorias Futuras](#-melhorias-futuras-roadmap)
+* [🏗️ 1. Visão Geral e Arquitetura](#visao-geral)
+* [📂 2. Estrutura do Repositório](#estrutura)
+* [🔹 Testes Técnicos Implementados](#testes-tecnicos)
+* [🕷️ 1. Web Scraping](#web-scraping)
+* [⚙️ 2. ETL e Transformação](#etl)
+* [🗄️ 3. Banco de Dados e SQL](#banco)
+* [🖥️ 4. API + Dashboard](#api-dashboard)
+* [🛠️ Configuração do Ambiente (Importante)](#config-ambiente)
+* [🛠️ Guia Completo de Execução](#guia-execucao)
+* [🚀 Diferenciais Técnicos e Resiliência](#diferenciais)
+* [🔮 Melhorias Futuras (Roadmap)](#roadmap)
+* [# 🧪 Testes Automatizados](#TESTES)
+* [⚖️ Análise Exaustiva de Trade-offs](#tradeoffs)
 
 ---
-
+  
+<a name="visao-geral"></a>
 ## 🏗️ 1. Visão Geral e Arquitetura
 
 A solução foi projetada seguindo os princípios **KISS (Keep It Simple, Stupid)** e **Clean Code**, garantindo um sistema:
@@ -42,7 +46,7 @@ A solução foi projetada seguindo os princípios **KISS (Keep It Simple, Stupid
 | **Frontend (Vue 3)** | Interface reativa para análise e visualização                  |
 
 ---
-
+<a name="estrutura"></a>
 ## 📂 2. Estrutura do Repositório
 
 ```text
@@ -60,11 +64,11 @@ A solução foi projetada seguindo os princípios **KISS (Keep It Simple, Stupid
 ```
 
 ---
-
+<a name="testes-tecnicos"></a>
 # 🔹 TESTES TÉCNICOS IMPLEMENTADOS
 
 ---
-
+<a name="web-scraping"></a>
 ## 🕷️ 1. Teste de Integração com API Pública (Web Scraping)
 
 ### 🎯 Objetivo
@@ -163,7 +167,7 @@ python run_etl.py
 ```
 
 ---
-
+<a name="etl"></a>
 ## ⚙️ 2. Teste de Transformação e Validação de Dados (ETL)
 
 ### 🎯 Objetivo
@@ -211,7 +215,7 @@ Conversão forçada para **UTF-8** para evitar erros de acentuação.
 * Registros incompletos → tratamento automático
 
 ---
-
+<a name="banco"></a>
 ## 🗄️ 3. Teste de Banco de Dados e SQL
 
 Scripts em:
@@ -271,7 +275,7 @@ mysql -u usuario -p intuitive_care < backend/db/queries.sql
 ```
 
 ---
-
+<a name="api-dashboard"></a>
 ## 🖥️ 4. API + Dashboard
 
 ### 🔹 Backend — FastAPI
@@ -337,8 +341,8 @@ http://localhost:5173
 ```
 
 ---
-
-## 🛠️ Configuração do Ambiente (Importante)
+<a name="config-ambiente"></a>
+## 🛠️ Configuração do Ambiente MySQL (Importante)
 
 Para que o projeto funcione corretamente na sua máquina, siga estes passos:
 
@@ -360,8 +364,8 @@ Para que o projeto funcione corretamente na sua máquina, siga estes passos:
 3. **Dependências:**
    - Instale as bibliotecas necessárias: `pip install -r requirements.txt`.
    - O projeto agora utiliza `python-dotenv` para carregar as configurações de forma segura.
-
-
+ 
+<a id="guia-execucao"></a>
 # 🛠️ Guia Completo de Execução (Passo a Passo)
 
 Este projeto foi desenhado para ser **simples de executar, resiliente e reproduzível em ambiente local**, sem necessidade de configurações manuais complexas entre pipeline de dados e aplicação.
@@ -441,7 +445,7 @@ Este projeto utiliza o operador walrus (:=), portanto requer:
 👉 Utilize Python 3.11+ para melhor desempenho e compatibilidade.
 
 
-
+```
 3️⃣ Inicie o processo completo:
 
 ```bash
@@ -486,7 +490,7 @@ http://localhost:5173
 ```
 
 ---
-
+<a name="diferenciais"></a>
 # 🚀 Diferenciais Técnicos e Resiliência
 
 ### 🛡️ Pipeline “À Prova de Falhas”
@@ -525,7 +529,7 @@ Isso permite alterar:
 * Resultado: respostas extremamente rápidas no Dashboard.
 
 ---
-
+<a name="roadmap"></a>
 # 🔮 Melhorias Futuras (Roadmap)
 
 ### 🐳 Dockerização Total
@@ -543,7 +547,16 @@ Para:
 
 > Escolha preterida nesta versão inicial para priorizar simplicidade de execução (KISS).
 
-### 🧪 Testes Automatizados
+### ☁️ Migração para Nuvem (Cloud-Ready)
+
+* **Managed Database (AWS RDS for MySQL):** Planejado para futuras versões, visando tornar o projeto totalmente independente de infraestrutura local. 
+    * **Vantagem:** Isso eliminaria a necessidade de o usuário/recrutador configurar um MySQL 8.0 manualmente.
+    * **Escalabilidade:** O uso do RDS permite que a aplicação se conecte a uma instância gerenciada com alta disponibilidade, backups automáticos e segurança robusta (VPC, Security Groups), seguindo os padrões da indústria.
+ 
+  ---
+
+<a name="TESTES"></a>
+# 🧪 Testes Automatizados
 
 Adicionar cobertura com **pytest** para:
 
@@ -554,7 +567,7 @@ Adicionar cobertura com **pytest** para:
 
 # Testes de API (Contrato e Integração)
 
- * O teste adicional valioso seria garantir que, se você mudar o nome de uma coluna no banco de dados, a API não "quebre" silenciosamente. 
+* O teste adicional valioso seria garantir que, se você mudar o nome de uma coluna no banco de dados, a API não "quebre" silenciosamente. 
 
 * O que testar: Se o endpoint /api/operadoras retorna um status 200 OK e se a estrutura do JSON é exatamente o que o Frontend espera.
 
@@ -569,7 +582,7 @@ Integrar ferramentas de observabilidade para:
 
 ---
 
-
+<a name="tradeoffs"></a>
 # ⚖️ Análise Exaustiva de Trade-offs Técnicos
 
 Atendendo ao **item 4.4 do desafio**, esta seção documenta comparativamente as principais decisões arquiteturais do projeto, destacando alternativas consideradas, vantagens, limitações e justificativas técnicas.
