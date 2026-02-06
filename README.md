@@ -21,6 +21,7 @@ O projeto automatiza o pipeline de dados da ANS — desde a coleta bruta via **W
 * [🛠️ Guia Completo de Execução](#guia-execucao)
 * [🚀 Diferenciais Técnicos e Resiliência](#diferenciais)
 * [🔮 Melhorias Futuras (Roadmap)](#roadmap)
+* [# 🧪 Testes Automatizados](#TESTES)
 * [⚖️ Análise Exaustiva de Trade-offs](#tradeoffs)
 
 ---
@@ -551,8 +552,11 @@ Para:
 * **Managed Database (AWS RDS for MySQL):** Planejado para futuras versões, visando tornar o projeto totalmente independente de infraestrutura local. 
     * **Vantagem:** Isso eliminaria a necessidade de o usuário/recrutador configurar um MySQL 8.0 manualmente.
     * **Escalabilidade:** O uso do RDS permite que a aplicação se conecte a uma instância gerenciada com alta disponibilidade, backups automáticos e segurança robusta (VPC, Security Groups), seguindo os padrões da indústria.
+ 
+  ---
 
-### 🧪 Testes Automatizados
+<a name="TESTES"></a>
+# 🧪 Testes Automatizados
 
 Adicionar cobertura com **pytest** para:
 
