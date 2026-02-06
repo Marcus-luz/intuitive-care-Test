@@ -341,7 +341,7 @@ http://localhost:5173
 
 ---
 <a name="config-ambiente"></a>
-## 🛠️ Configuração do Ambiente (Importante)
+## 🛠️ Configuração do Ambiente MySQL (Importante)
 
 Para que o projeto funcione corretamente na sua máquina, siga estes passos:
 
@@ -363,9 +363,8 @@ Para que o projeto funcione corretamente na sua máquina, siga estes passos:
 3. **Dependências:**
    - Instale as bibliotecas necessárias: `pip install -r requirements.txt`.
    - O projeto agora utiliza `python-dotenv` para carregar as configurações de forma segura.
- ```
-
-<a name="guia-execucao"></a>
+ 
+<a id="guia-execucao"></a>
 # 🛠️ Guia Completo de Execução (Passo a Passo)
 
 Este projeto foi desenhado para ser **simples de executar, resiliente e reproduzível em ambiente local**, sem necessidade de configurações manuais complexas entre pipeline de dados e aplicação.
