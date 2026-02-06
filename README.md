@@ -1,12 +1,14 @@
 # 🚀 Desafio Técnico – Estágio em Tecnologia (v2.0)
 
-**Candidato:** Marcus Vinicius da Luz Arzújo
+**Candidato:** Marcus Vinicius da Luz Araújo
 **Stack Principal:** Python | FastAPI | Vue.js 3 | MySQL
 
 Este repositório contém a solução do desafio técnico para a **Intuitive Care**.
 O projeto automatiza o pipeline de dados da ANS — desde a coleta bruta via **Web Scraping** até a visualização em um **Dashboard Analítico moderno**.
 
 ---
+
+## 📌 Sumário
 
 ## 📌 Sumário
 
@@ -20,7 +22,6 @@ O projeto automatiza o pipeline de dados da ANS — desde a coleta bruta via **W
 * [🚀 Guia Completo de Execução](#guia-completo-de-execução-passo-a-passo)
 * [⚖️ Análise Exaustiva de Trade-offs](#análise-exaustiva-de-trade-offs-técnicos)
 * [🔮 Melhorias Futuras](#melhorias-futuras-roadmap)
-
 ---
 
 ## 🏗️ 1. Visão Geral e Arquitetura
