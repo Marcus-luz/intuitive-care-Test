@@ -435,6 +435,14 @@ Com o ambiente ativo, execute:
 ```bash
 pip install -r requirements.txt
 ```
+🧩 AVISO: Dependendo de como o arquivo foi descompactado, os arquivos do projeto podem estar dentro de uma subpasta. Caso receba o erro No such file or directory ao tentar instalar o requirements.txt, certifique-se de entrar na pasta raiz do código:
+
+Comando para corrigir o caminho:
+```bash
+cd Nome_da_subpasta
+pip install -r requirements.txt
+```
+
 🧩 Nota de Compatibilidade
 
 Este projeto utiliza o operador walrus (:=), portanto requer:
