@@ -26,7 +26,7 @@ Evita arquivos pesados e desnecessários no Git, mantendo o projeto enxuto e pro
 ✅ O que está versionado no repositório:
 Os arquivos finais gerados pelo pipeline ficam em:
 
-/data/generated/
+/data/
 - consolidado_despesas.csv  
 - despesas_agregadas.csv  
 - consolidado_despesas.zip
