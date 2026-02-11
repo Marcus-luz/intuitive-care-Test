@@ -817,6 +817,10 @@ Alternativas consideradas:
 
 **Princípio aplicado:** **KISS (Keep It Simple, Stupid)**
 
+### Visualização Final Frontend + Dados
+<img width="1721" height="727" alt="image" src="https://github.com/user-attachments/assets/30d85f44-0950-4a3e-9a84-201cb1c47a20" />
+
+<img width="1415" height="617" alt="image" src="https://github.com/user-attachments/assets/fb98bebb-9f58-41d9-a31a-95a7c6184528" />
 
 
 
