@@ -593,6 +593,12 @@ Para:
 <a name="TESTES"></a>
 # 🧪 Testes Automatizados
 
+1. Certifique-se de que o ambiente virtual está ativo e as dependências instaladas.
+2.  execute:
+```bash
+pytest
+```
+
 Adicionar cobertura com **pytest** para:
 
 * DataProcessor
