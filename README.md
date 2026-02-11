@@ -8,6 +8,33 @@ O projeto automatiza o pipeline de dados da ANS — desde a coleta bruta via **W
 
 ---
 
+📌 Sobre os Arquivos de Dados (Justificativa Técnica)
+
+⚠️ Por que os arquivos brutos e ZIPs da ANS não estão no GitHub?
+
+Optei por não versionar arquivos brutos (ZIPs e planilhas originais) por três razões técnicas:
+
+Boas práticas de engenharia de dados:
+Em projetos reais, dados brutos grandes e públicos normalmente não são armazenados no repositório de código — apenas o código que os processa.
+
+Reprodutibilidade:
+O pipeline de ETL baixa, extrai e processa os dados automaticamente a partir da fonte oficial da ANS, garantindo que qualquer avaliador possa reproduzir exatamente o mesmo resultado.
+
+Controle de versão e tamanho do repositório:
+Evita arquivos pesados e desnecessários no Git, mantendo o projeto enxuto e profissional.
+
+✅ O que está versionado no repositório:
+Os arquivos finais gerados pelo pipeline ficam em:
+
+/data/generated/
+- consolidado_despesas.csv  
+- despesas_agregadas.csv  
+- consolidado_despesas.zip
+
+Esses arquivos representam o resultado das etapas 1 e 2 do teste.
+
+---
+
 ## 📌 Sumário
 
 * [🏗️ 1. Visão Geral e Arquitetura](#visao-geral)
