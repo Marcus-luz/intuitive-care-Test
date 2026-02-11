@@ -81,7 +81,7 @@ A solução foi projetada seguindo os princípios **KISS (Keep It Simple, Stupid
 │   ├── api/            # Servidor FastAPI e rotas
 │   ├── core/           # Pipeline de Dados (Crawler, Processor, Aggregator)
 │   └── db/             # Scripts SQL (Setup, Import e Queries Analíticas)
-├── data/               # Arquivos brutos e processados
+├── data/               # # Arquivos brutos baixados automaticamente da ANS (gerados pelo pipeline)
 ├── frontend/           # Aplicação Vue.js 3 (Vite + Tailwind CSS)
 ├── run_etl.py          # Orquestrador do pipeline (Testes 1 e 2)
 ├── main.py             # script orquestrador único
