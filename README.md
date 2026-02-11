@@ -8,7 +8,7 @@ O projeto automatiza o pipeline de dados da ANS — desde a coleta bruta via **W
 
 ---
 
-📌 Sobre os Arquivos de Dados (Justificativa Técnica)
+## 📌 Sobre os Arquivos de Dados (Justificativa Técnica)
 
 ⚠️ Por que os arquivos brutos e ZIPs da ANS não estão no GitHub?
 
