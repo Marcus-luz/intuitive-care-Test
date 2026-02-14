@@ -2,7 +2,7 @@ import re
 
 def is_valid_cnpj(cnpj: str) -> bool:
     """
-    2.1: Valida formato e dígitos verificadores do CNPJ[cite: 60].
+    2.1: Valida formato e dígitos verificadores do CNPJ.
     Implementa o algoritmo de validação da Receita Federal.
     """
     # Remove caracteres não numéricos
@@ -30,10 +30,10 @@ def is_valid_cnpj(cnpj: str) -> bool:
 
 def validate_row(row):
     """
-    2.1: Executa o conjunto completo de validações exigidas[cite: 57]:
+    2.1: Executa o conjunto completo de validações exigidas:
     - Valores numéricos positivos [cite: 61]
     - Razão Social não vazia [cite: 63]
-    - CNPJ válido (apenas se já houver sido enriquecido) [cite: 60]
+    - CNPJ válido (apenas se já houver sido enriquecido)
     """
     # 1. Validação de Valor Positivo [cite: 61]
     # Essencial para garantir a integridade de cálculos estatísticos futuros.
