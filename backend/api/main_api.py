@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Query, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles  # <-- NOVO IMPORT
 import mysql.connector
 from typing import Optional
 import os
@@ -25,7 +26,7 @@ def get_db_connection():
         collation='utf8mb4_general_ci' 
     )
 
-# 4.2. Rota: Listar Operadoras com Paginação (Item 4.2 e 4.3 do PDF)
+# 4.2. Rota: Listar Operadoras com Paginação
 @app.get("/api/operadoras")
 def list_operadoras(
     page: int = Query(1, ge=1), 
@@ -63,7 +64,7 @@ def list_operadoras(
         cursor.close()
         conn.close()
 
-# 4.2. Rota: Histórico de Despesas (Item 4.2 e 4.3.2 do PDF)
+# 4.2. Rota: Histórico de Despesas
 @app.get("/api/operadoras/historico/{razao_social}")
 def get_historico(razao_social: str):
     conn = get_db_connection()
@@ -82,7 +83,7 @@ def get_historico(razao_social: str):
         cursor.close()
         conn.close()
 
-# 4.2. Rota: Estatísticas Agregadas (Item 4.2.3 do PDF)
+# 4.2. Rota: Estatísticas Agregadas
 @app.get("/api/estatisticas")
 def get_stats():
     conn = get_db_connection()
@@ -103,3 +104,18 @@ def get_stats():
     finally:
         cursor.close()
         conn.close()
+
+# =================================================================
+# SERVIR O FRONTEND VUE.JS NA ROTA PRINCIPAL (/)
+# =================================================================
+# Volta dois níveis de diretório para chegar na raiz e entrar em frontend/dist
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.abspath(os.path.join(current_dir, "..", ".."))
+frontend_dist_path = os.path.join(project_root, "frontend", "dist")
+
+if os.path.exists(frontend_dist_path):
+    # html=True faz com que ele procure o index.html automaticamente
+    app.mount("/", StaticFiles(directory=frontend_dist_path, html=True), name="frontend")
+else:
+    print(f"\n[AVISO] Pasta não encontrada: {frontend_dist_path}")
+    print("[AVISO] Para o frontend aparecer, rode 'npm run build' dentro da pasta 'frontend'.\n")
